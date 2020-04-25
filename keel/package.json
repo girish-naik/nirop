@@ -1,0 +1,16 @@
+{
+  "name": "keel",
+  "version": "1.0.0",
+  "description": "keel of the app - chat service",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mr-obiwankenobi",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.14.4",
+    "aws-sdk": "^2.433.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.4.1"
+  }
+}
