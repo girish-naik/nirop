@@ -2,24 +2,34 @@
   "name": "bill",
   "version": "1.0.0",
   "description": "bill of the app - auth",
-  "main": "src/server.js",
+  "main": "src/server.ts",
   "scripts": {
+    "start": "node .",
+    "tsc": "tsc",
+    "local": "ts-node-dev --inspect --respawn --transpileOnly ./src/server.ts",
+    "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
+    "prod": "tsc && node ./www/server.js",
+    "clean": "rm -rf www/ || true",
+    "build": "npm run clean && tsc && cp -rf src/config www/config && cp .npmrc www/.npmrc && cp package.json www/package.json && cd www && zip -r Archive.zip . && cd ..",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "mr-obiwankenobi",
   "license": "ISC",
   "dependencies": {
     "@types/jsonwebtoken": "^8.3.2",
+    "aws-sdk": "^2.433.0",
     "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "jsonwebtoken": "^8.5.1"
+    "axios": "^0.19.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "email-validator": "^2.0.4"
   },
   "devDependencies": {
     "@types/express": "^4.16.1",
     "@types/node": "^11.11.6",
     "@types/validator": "^10.9.0",
-    "ts-node-dev": "^1.0.0-pre.32",
-    "tslint": "^5.14.0",
-    "typescript": "^3.3.4000"
+    "ts-node-dev": "^1.0.0-pre.44",
+    "eslint": "^6.8.0",
+    "typescript": "^3.8.3"
   }
 }
