@@ -26,6 +26,7 @@ router.put("/", parseUser, validateUser, async (req:Request, res:Response) => {
         await UserService.updateUser(user);
         res.status(200).send()
     } catch(err) {
+        console.log(err)
         res.status(404).send({
             message : "Failed to update user."
         })

@@ -1,19 +1,14 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { IndexRouter } from './controllers/v0/index.router';
-import {JwtPayload} from './auth/models/JwtPayload'
-
 import bodyParser from 'body-parser';
-import { createConfig } from './config/util';
-import * as Auth0Client from './auth/utils/auth0Client'
-import { createTables } from './dataLayer/synchronize';
-import { ConfigType } from './config/models/ConfigType';
-
-const config:ConfigType = createConfig();
+import { IndexRouter } from './controllers/v0/index.router';
+import {fetchSigningKeys, appConfig, JwtPayload, verifyToken} from '@bit/mr-obiwankenobi.nirop-chat-helpers.tummy'
+import { syncSchemas } from './dataLayer/sync';
 
 (async () => {
-  var signingKeys = await Auth0Client.fetchSigningKeys();
-  createTables()
+  const config = appConfig;
+  var signingKeys = await fetchSigningKeys();
+  await syncSchemas();
   const app = express();
   const port = config.port || 80; // default port to listen
   
@@ -26,10 +21,10 @@ const config:ConfigType = createConfig();
     next();
   });
 
-  app.use(function(req:Request, res:Response, next) {
+  app.use(async function(req:Request, res:Response, next) {
     const authorizationHeader = req.header("authorization")
     try {
-      const jwtPayload:JwtPayload = Auth0Client.verifyToken(signingKeys, authorizationHeader);
+      const jwtPayload:JwtPayload = await verifyToken(signingKeys, authorizationHeader);
       res.locals.jwtPayload = jwtPayload
       next()
     } catch (err) {

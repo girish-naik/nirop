@@ -1,0 +1,51 @@
+{
+  "name": "tummy",
+  "version": "1.0.0",
+  "description": "Tummy - core helpers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mr-obiwankenobi",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^11.15.12",
+    "@types/jsonwebtoken": "^8.3.2",
+    "aws-sdk": "^2.433.0",
+    "axios": "^0.19.0",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.8.3"
+  },
+  "bit": {
+    "env": {
+      "compiler": "bit.envs/compilers/typescript@3.1.46"
+    },
+    "componentsDefaultDirectory": "components/{name}",
+    "packageManager": "npm",
+    "overrides" : {
+      "tummy" : {
+        "types" : "dist/index.d.ts",
+        "env" : {
+          "compiler": {
+            "bit.envs/compilers/typescript@3.1.46": {
+              "rawConfig" : {
+                "tsconfig" : {
+                  "compilerOptions" : {
+                    "module" : "commonjs"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

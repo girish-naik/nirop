@@ -1,10 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
 import * as UserService from "../../../../businessLayer/UserService";
-import { createConfig } from "../../../../config/util";
+import { appConfig } from "@bit/mr-obiwankenobi.nirop-chat-helpers.tummy";
 
 const router: Router = Router();
-const config = createConfig()
-const contactViewConfig = config.views["contacts"]
+const contactViewConfig = appConfig.views["contacts"]
 router.post("/", async(req:Request, res:Response, next:NextFunction) => {
     try {
         const {uId, displayName} = req.body;

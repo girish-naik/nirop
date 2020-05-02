@@ -1,9 +1,10 @@
 import { User } from "./models/User";
 import { DocumentClient, Key } from 'aws-sdk/clients/dynamodb';
-import { createDocumentClient } from "../../cloud/aws";
 import { ContactList } from "./models/ContactList";
+import {createDocumentClient} from '@bit/mr-obiwankenobi.nirop-chat-helpers.tummy'
 
 const userTableName = process.env.USER_TABLE_NAME
+const userTableIndex = process.env.USER_TABLE_INDEX
 const dClient:DocumentClient = createDocumentClient()
 
 export async function saveUser(user:User) {
@@ -52,6 +53,7 @@ export async function getUser(uId: string) : Promise <User> {
 export async function getUsers(limit: number, lastEvaluatedKey: any) : Promise <ContactList> {
     lastEvaluatedKey = getUdefinedIfInvalid(lastEvaluatedKey)
     const result = await dClient.scan({
+        IndexName : userTableIndex,
         TableName : userTableName,
         ExclusiveStartKey : lastEvaluatedKey,
         Limit: 10
