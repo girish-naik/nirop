@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "d6fce5e3-dd0c-4150-b229-53011dda6ae0",
+		"name": "keel.conversation.collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getConversations",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{niropAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{hostname}}:{{port}}/api/v0/chat/?cId=50aa76600777b5c37e35d9e2dc6f9ae7ed1e00c7bbec97c00b809124331dd074&uDate=1588440675406&pId=google-oauth2|111441981547688620491",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"v0",
+						"chat",
+						""
+					],
+					"query": [
+						{
+							"key": "cId",
+							"value": "50aa76600777b5c37e35d9e2dc6f9ae7ed1e00c7bbec97c00b809124331dd074"
+						},
+						{
+							"key": "uDate",
+							"value": "1588440675406"
+						},
+						{
+							"key": "pId",
+							"value": "google-oauth2|111441981547688620491"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "startChat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{niropAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"participants\" : [\n\t\t\"userId14\"\t\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{hostname}}:{{port}}/api/v0/chat/start",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"v0",
+						"chat",
+						"start"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

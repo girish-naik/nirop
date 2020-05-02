@@ -56,7 +56,7 @@ export async function getUsers(limit: number, lastEvaluatedKey: any) : Promise <
         IndexName : userTableIndex,
         TableName : userTableName,
         ExclusiveStartKey : lastEvaluatedKey,
-        Limit: 10
+        Limit: limit
     }).promise();
     if (result.Count > 0) {
         const lastEvaluatedUser:User = result.LastEvaluatedKey ? transformToUser(result.LastEvaluatedKey) : emptyUser();

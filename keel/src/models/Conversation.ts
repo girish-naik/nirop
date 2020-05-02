@@ -1,4 +1,5 @@
 export interface Conversation {
     cId : string,
-    uId : string
+    pId? : string,
+    uDate? : string
 }

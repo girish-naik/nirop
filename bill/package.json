@@ -16,13 +16,10 @@
   "author": "mr-obiwankenobi",
   "license": "ISC",
   "dependencies": {
-    "@types/jsonwebtoken": "^8.3.2",
-    "@bit/mr-obiwankenobi.nirop-chat-helpers.tummy": "^0.0.12",
+    "@bit/mr-obiwankenobi.nirop-chat-helpers.tummy": "^0.0.15",
     "aws-sdk": "^2.433.0",
     "body-parser": "^1.18.3",
-    "axios": "^0.19.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
     "email-validator": "^2.0.4"
   },
   "devDependencies": {

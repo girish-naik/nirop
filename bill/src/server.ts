@@ -1,5 +1,5 @@
 import express from 'express';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { IndexRouter } from './controllers/v0/index.router';
 import {fetchSigningKeys, appConfig, JwtPayload, verifyToken} from '@bit/mr-obiwankenobi.nirop-chat-helpers.tummy'
@@ -15,13 +15,13 @@ import { syncSchemas } from './dataLayer/sync';
   app.use(bodyParser.json());
 
   //CORS Should be restricted
-  app.use(function(req: Request, res: Response, next) {
+  app.use(function(req: Request, res: Response, next:NextFunction) {
     res.header("Access-Control-Allow-Origin", config.allowedFrontendUrl);
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
   });
 
-  app.use(async function(req:Request, res:Response, next) {
+  app.use(async function(req:Request, res:Response, next:NextFunction) {
     const authorizationHeader = req.header("authorization")
     try {
       const jwtPayload:JwtPayload = await verifyToken(signingKeys, authorizationHeader);

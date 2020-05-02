@@ -2,7 +2,7 @@ import { verify, decode, JwtHeader } from 'jsonwebtoken'
 import Axios from 'axios'
 import { AxiosResponse } from 'axios'
 import * as AWS from 'aws-sdk'
-import DynamoDB, { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import DynamoDB, { DocumentClient, BatchWriteItemInput } from 'aws-sdk/clients/dynamodb';
 
 export interface Jwt {
     header: JwtHeader
@@ -69,6 +69,9 @@ const config: ConfigType = {
     views: {
         "contacts": {
             pageLength: 10
+        },
+        "chats" : {
+            pageLength: 10
         }
     },
     dynamoDB: {
@@ -98,7 +101,62 @@ const config: ConfigType = {
                                     },
                                     {
                                         "AttributeName": "displayName",
-                                        "KeyType": "SORT"
+                                        "KeyType": "RANGE"
+                                    }
+                                ],
+                                "Projection": {
+                                    "ProjectionType": "ALL"
+                                },
+                                "ProvisionedThroughput": {
+                                    "ReadCapacityUnits": 1,
+                                    "WriteCapacityUnits": 1
+                                }
+                            }
+                        ],
+                        BillingMode: "PAY_PER_REQUEST"
+                    }
+                }
+            },
+            "conversation" : {
+                Tables : {
+                    "ConvoTable" : {
+                        TableName: process.env.CONVERSATION_TABLE_NAME,
+                        KeySchema: [
+                            { AttributeName: "pId", KeyType: "HASH" },
+                            { AttributeName: "cId", KeyType: "RANGE" }
+                        ],
+                        AttributeDefinitions: [
+                            { AttributeName: "cId", AttributeType: "S" }, 
+                            { AttributeName: "pId", AttributeType: "S" },
+                            { AttributeName: "uDate", AttributeType: "S" },
+                        ],
+                        GlobalSecondaryIndexes: [
+                            {
+                                "IndexName": process.env.CONVERSATION_TABLE_UDATE_IDX,
+                                "KeySchema": [
+                                    {
+                                        "AttributeName": "pId",
+                                        "KeyType": "HASH"
+                                    },
+                                    {
+                                        "AttributeName": "uDate",
+                                        "KeyType": "RANGE"
+                                    }
+                                ],
+                                "Projection": {
+                                    "ProjectionType": "ALL"
+                                },
+                                "ProvisionedThroughput": {
+                                    "ReadCapacityUnits": 1,
+                                    "WriteCapacityUnits": 1
+                                }
+                            },
+                            {
+                                "IndexName": process.env.CONVERSATION_TABLE_CID_IDX,
+                                "KeySchema": [
+                                    {
+                                        "AttributeName": "cId",
+                                        "KeyType": "HASH"
                                     }
                                 ],
                                 "Projection": {
@@ -158,7 +216,6 @@ export async function verifyToken(signingKeys: AppJkwsKey[], authHeader: string)
 
 export function createDocumentClient(): DocumentClient {
     if (process.env.IS_OFFLINE) {
-        console.log("Using local AWS DynamoDB client")
         return new AWS.DynamoDB.DocumentClient(appConfig.dynamoDB.localConnectionParams);
     } else {
         return new AWS.DynamoDB.DocumentClient();
@@ -168,7 +225,7 @@ export function createDocumentClient(): DocumentClient {
 export async function createTables(serviceName: string) {
     const dynamoDBConfig = appConfig.dynamoDB;
     if (process.env.IS_OFFLINE) {
-        const dynamoDB: DynamoDB = new DynamoDB(dynamoDBConfig.localConnectionParams);
+        const dynamoDB: DynamoDB = getDyanamoDBRef(dynamoDBConfig);
         const service: AppServiceConfigType = dynamoDBConfig.Services[serviceName];
         if (service) {
             const tableConfig: DynamoDBTableConfigType = service.Tables;
@@ -186,6 +243,20 @@ export async function createTables(serviceName: string) {
                 }
             }
         }
+    }
+}
+
+export async function batchWrite(params:BatchWriteItemInput) {
+    const dynamoDBConfig = appConfig.dynamoDB;
+    const dynamoDB: DynamoDB = getDyanamoDBRef(dynamoDBConfig);
+    await dynamoDB.batchWriteItem(params).promise();
+}
+
+function getDyanamoDBRef(dynamoDBConfig: DynamoDBConfigType) : DynamoDB {
+    if (process.env.IS_OFFLINE) {
+        return new DynamoDB(dynamoDBConfig.localConnectionParams);
+    } else {
+        return new DynamoDB();
     }
 }
 
