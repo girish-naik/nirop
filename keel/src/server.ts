@@ -1,7 +1,7 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import { IndexRouter } from './controllers/v0/index.router';
-import {fetchSigningKeys, appConfig, JwtPayload, verifyToken} from '../../tummy/dist'
+import {fetchSigningKeys, appConfig, JwtPayload, verifyToken} from '@bit/mr-obiwankenobi.nirop-chat-helpers.tummy'
 import bodyParser from 'body-parser';
 import { syncSchemas } from './dataLayer/sync';
 

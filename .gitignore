@@ -5,3 +5,5 @@ yarn.lock
 .bitmap
 dist
 www
+app
+.DS_Store

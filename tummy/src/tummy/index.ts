@@ -63,6 +63,8 @@ export interface AppJkwsKey {
     publicKey : string
 }
 
+const dynamodb_host = process.env.DYNAMODBHOST || "localhost";
+
 const config: ConfigType = {
     allowedFrontendUrl: "http://localhost:3000",
     port: process.env.PORT,
@@ -76,7 +78,7 @@ const config: ConfigType = {
     },
     dynamoDB: {
         localConnectionParams: {
-            endpoint: "http://localhost:8000",
+            endpoint: "http://" + dynamodb_host + ":8000",
             region: "us-east-1"
         },
         Services: {

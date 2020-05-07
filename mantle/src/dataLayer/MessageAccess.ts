@@ -32,7 +32,7 @@ export async function fetchMessages(cId: string, mId: string, limit: number) : P
     const result = await dClient.query({
         KeyConditionExpression : "cId = :cId",
         ExpressionAttributeValues : {
-            cId
+            ":cId" : cId
         },
         TableName: messageTableName,
         IndexName: conversationIndex,
