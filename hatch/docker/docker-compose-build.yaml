@@ -1,0 +1,14 @@
+version: "3"
+services:
+  nirop_sing:
+    build:
+      context: ../../sing
+    image: girishnaik/nirop-sing
+  nirop_keel:
+    build:
+      context: ../../keel
+    image: girishnaik/nirop-keel
+  nirop_bill:
+    build:
+      context: ../../bill
+    image: girishnaik/nirop-bill

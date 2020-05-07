@@ -1,4 +1,5 @@
-export class Chat {
+export interface Chat {
     cId : string
-    participants : string[]
+    uDate : string
+    participants? : string[]
 }

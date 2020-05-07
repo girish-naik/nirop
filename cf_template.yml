@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS procurement template for chat app
+Resources:
+    UserTable:
+        Type: AWS::DynamoDB::Table
+        Properties: 
+        AttributeDefinitions: 
+            - AttributeName : uId
+              AttributeType : S   
+        BillingMode: PAY_PER_REQUEST
+        KeySchema: 
+            - AttributeName : uId
+              KeyType : HASH
+        TableName: ${!USER_TABLE_NAME}

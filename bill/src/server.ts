@@ -1,8 +1,8 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
+import bodyParser from 'body-parser';
 import { IndexRouter } from './controllers/v0/index.router';
 import {fetchSigningKeys, appConfig, JwtPayload, verifyToken} from '@bit/mr-obiwankenobi.nirop-chat-helpers.tummy'
-import bodyParser from 'body-parser';
 import { syncSchemas } from './dataLayer/sync';
 
 (async () => {
@@ -38,7 +38,7 @@ import { syncSchemas } from './dataLayer/sync';
   app.use('/api/v0/', IndexRouter)
 
   // Root URI call
-  app.get( "/", async ( req: Request, res: Response ) => {
+  app.get( "/", async ( req, res ) => {
     res.send( "/api/v0/" );
   });
   
@@ -47,5 +47,5 @@ import { syncSchemas } from './dataLayer/sync';
   app.listen( port, () => {
       console.log( `server running ` + config.allowedFrontendUrl );
       console.log( `press CTRL+C to stop server` );
-  } );
+  });
 })();

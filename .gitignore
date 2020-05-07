@@ -1,2 +1,9 @@
 node_modules/
 package-lock.json
+yarn.lock
+.bit
+.bitmap
+dist
+www
+app
+.DS_Store
