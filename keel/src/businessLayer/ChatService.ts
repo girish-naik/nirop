@@ -18,7 +18,9 @@ export async function startChat(uId: string, participants: string[]): Promise<Ch
         return transformToChatFromView(conversation);
     }
     const uDate = Date.now().toString()
-    await dataLayer.saveConversations(participants.map(pId => createConversation(pId, hashDigest, uDate)));
+    const conversations:Conversation[] = participants.map(pId => createConversation(pId, hashDigest, uDate));
+    await dataLayer.saveConversations(conversations);
+    return {cId : hashDigest, uDate, participants : participants.filter((pId) => pId !== uId)};
 }
 
 function joinParticipants(participants: string[]): string {
