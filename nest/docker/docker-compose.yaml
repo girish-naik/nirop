@@ -18,7 +18,7 @@ services:
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
-      URL: "http://localhost:3000"
+      FRONTEND_URL: "http://localhost:3000"
       USER_TABLE_NAME: $USER_TABLE_NAME
       USER_TABLE_INDEX: $USER_TABLE_INDEX
       CONVERSATION_TABLE_UDATE_IDX: $CONVERSATION_TABLE_UDATE_IDX
@@ -36,7 +36,7 @@ services:
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
-      URL: "http://localhost:3000"
+      FRONTEND_URL: "http://localhost:3000"
       USER_TABLE_NAME: $USER_TABLE_NAME
       USER_TABLE_INDEX: $USER_TABLE_INDEX
       CONVERSATION_TABLE_UDATE_IDX: $CONVERSATION_TABLE_UDATE_IDX

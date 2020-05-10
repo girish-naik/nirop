@@ -66,7 +66,7 @@ export interface AppJkwsKey {
 const dynamodb_host = process.env.DYNAMODBHOST || "localhost";
 
 const config: ConfigType = {
-    allowedFrontendUrl: "http://localhost:3000",
+    allowedFrontendUrl: process.env.FRONTEND_URL,
     port: process.env.PORT,
     views: {
         "contacts": {

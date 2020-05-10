@@ -15,7 +15,7 @@
   "author": "mr-obiwankenobi",
   "dependencies": {
     "aws-sdk": "^2.433.0",
-    "@bit/mr-obiwankenobi.nirop-chat-helpers.tummy": "^0.0.17",
+    "@bit/mr-obiwankenobi.nirop-chat-helpers.tummy": "^0.0.18",
     "body-parser": "^1.18.3",
     "express": "^4.17.1",
     "crypto-js": "^4.0.0"
