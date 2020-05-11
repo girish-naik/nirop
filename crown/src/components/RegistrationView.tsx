@@ -46,7 +46,7 @@ export class RegistrationView extends Component<RegistrationViewProps, Registrat
 
     handleFormSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
-        if (!this.state.displayName || this.state.displayName.split(" ").length != 2) {
+        if (!this.state.displayName || this.state.displayName.split(" ").length !== 2) {
             this.setState({ ...this.state, formValidation: true, formValidationMsg: "Invalid display name." })
             return;
         }

@@ -1,9 +1,8 @@
 import React, { Component, MouseEvent } from 'react'
 import { BaseProps } from '../models/BaseProps';
 import { BaseState } from '../models/BaseState';
-import { User } from '../api/bill/models/User';
 import { Segment, Grid, Header, Icon, MenuItemProps, Menu } from 'semantic-ui-react';
-import { Router, Route, Switch, Link } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import ChatsView from './ChatsView';
 import { ChatView } from './ChatView';
 import ContactsView from './ContactsView';

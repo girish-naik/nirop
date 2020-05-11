@@ -11,10 +11,6 @@ export interface AppState extends BaseState { }
 
 export default class App extends Component<AppProps, AppState> {
 
-  constructor(props: AppProps) {
-    super(props);
-  }
-
   render() {
     return (<Main {...this.props} />)
   }

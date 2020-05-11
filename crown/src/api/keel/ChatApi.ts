@@ -25,7 +25,10 @@ export async function startChat(idToken: string, participants: string[]): Promis
 
 export async function getChats(idToken: string, lastChat: LastChat|undefined): Promise<Chats|undefined> {
     try {
-        const url = !lastChat ?  `${apiEndpoint}` : `${apiEndpoint}` + "?cId" + lastChat.cId + "&uDate" + lastChat.uDate + "&pId" + lastChat.pId;
+        let url = `${apiEndpoint}`;
+        if (lastChat) {
+            url = url + "?cId" + lastChat.cId + "&uDate" + lastChat.uDate + "&pId" + lastChat.pId;
+        }
         const response = await Axios.get(url, 
         {
             headers: {

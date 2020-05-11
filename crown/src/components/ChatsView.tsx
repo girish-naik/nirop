@@ -21,14 +21,6 @@ export interface ChatsViewState extends BaseState {
     lastChat?: LastChat
 }
 
-function unFlatten(chats: ChatView[], width: number) {
-    let chatsMatrix: ChatView[][] = [];
-    for (let i = 0; i < chats.length; i = i + width) {
-        chatsMatrix.push(chats.slice(i, i + width));
-    }
-    return chatsMatrix;
-}
-
 function getCardDescriptionStyle() {
     return { textOverflow: "elipses", overflow: "hidden", whiteSpace: "nowrap" }
 }
