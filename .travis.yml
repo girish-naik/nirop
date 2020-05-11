@@ -22,11 +22,11 @@ install:
   - hatch/bin/build.sh
   - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
   - docker images
-  - docker push "$DOCKER_USERNAME"/udacity-restapi-feed:latest
-  - docker push "$DOCKER_USERNAME"/udacity-restapi-user:latest
-  - docker push "$DOCKER_USERNAME"/udacity-frontend:local
-  - docker push "$DOCKER_USERNAME"/reverseproxy:latest
-
+  - docker push $DOCKER_USERNAME/nirop-sing:latest
+  - docker push $DOCKER_USERNAME/nirop-crown:latest
+  - docker push $DOCKER_USERNAME/nirop-keel:latest
+  - docker push $DOCKER_USERNAME/nirop-bill:latest
+  - docker push $DOCKER_USERNAME/nirop-mantle:latest
 # script:
 #   - mkdir ${HOME}/.kube
 #   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
