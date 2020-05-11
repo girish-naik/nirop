@@ -12,7 +12,7 @@ export async function getUserDetails(idToken: string): Promise<User|undefined> {
                 'authorization': `Bearer ${idToken}`
             }
         })
-        return response.data;
+        return response.data.user ? response.data.user : response.data;
     } catch (err) {
         return undefined;
     }

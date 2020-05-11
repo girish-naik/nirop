@@ -11,6 +11,10 @@ export async function fetchChats(uId: string, limit: number, lastChat: LastChat)
     return transforToChatView(await dataLayer.getAllConversations(uId, limit, transfromToConversation(lastChat)));
 }
 
+export async function getChat(uId: string, cId:string) : Promise<Chat> {
+    return transformToChatFromView(await dataLayer.getConversation(cId, uId));
+}
+
 export async function startChat(uId: string, participants: string[]): Promise<Chat> {
     const hashDigest = sha256(joinParticipants(participants.sort())).toString();
     const conversation: ConversationView = await dataLayer.getConversation(hashDigest, uId);

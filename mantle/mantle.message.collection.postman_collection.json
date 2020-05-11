@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "3cd4e21f-992b-411a-9b44-c3cf0e52c5e8",
+		"name": "mantle.message.collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "saveMessage",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{niropAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cId\" : \"1\",\n\t\"message\" : \"Hello\"\n}"
+				},
+				"url": {
+					"raw": "{{protocol}}://{{hostname}}:{{mantlePort}}/api/v0/message",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{mantlePort}}",
+					"path": [
+						"api",
+						"v0",
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetchMessages",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{niropAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{hostname}}:{{mantlePort}}/api/v0/message/1",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{mantlePort}}",
+					"path": [
+						"api",
+						"v0",
+						"message",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteMessage",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{niropAuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{hostname}}:{{mantlePort}}/api/v0/message/{{deleteThis}}",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{mantlePort}}",
+					"path": [
+						"api",
+						"v0",
+						"message",
+						"{{deleteThis}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

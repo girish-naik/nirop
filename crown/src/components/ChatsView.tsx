@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { BaseProps } from "../models/BaseProps";
 import { BaseState } from "../models/BaseState";
 import { ChatView } from "../models/ChatView";
-import { Segment, Grid, Placeholder, Card, Image } from "semantic-ui-react";
+import { Segment, Grid, Placeholder, Card, Image, Header, Icon } from "semantic-ui-react";
 import { getDisplayNameAvatar } from '../utils/UserUtil'
 import { getChats } from '../api/keel/ChatApi';
 import { ContactList } from '../api/bill/models/ContactList';
@@ -66,7 +66,11 @@ export default class ChatsView extends Component<BaseProps, ChatsViewState> {
                         lastUpdated: convertToDisplayDateTime(chat.uDate)
                     }
                 })
-                this.setState({ chats: chatsView })
+                if (chatsView && chatsView.length > 0) {
+                    this.setState({ chats: chatsView })
+                } else {
+                    this.setState({ chats: [] })
+                }
             } else {
                 this.setState({ chats: [] })
             }
@@ -109,6 +113,13 @@ export default class ChatsView extends Component<BaseProps, ChatsViewState> {
             })
             }
             </Card.Group>);
+        } else {
+            return (<Segment placeholder>
+                <Header icon>
+                  <Icon name='search' />
+                  You don't have any chats. Start a chat with your contacts.
+                </Header>
+              </Segment>)
         }
     }
 

@@ -38,3 +38,18 @@ export async function getChats(idToken: string, lastChat: LastChat|undefined): P
         return undefined;
     }
 }
+
+export async function getChat(idToken: string, cId: string): Promise<Chat|undefined> {
+    try {
+        const response = await Axios.get(`${apiEndpoint}/` + cId, 
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${idToken}`
+            }
+        })
+        return response.data;
+    } catch (err) {
+        return undefined;
+    }
+}

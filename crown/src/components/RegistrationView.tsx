@@ -16,7 +16,11 @@ interface RegistrationViewState extends BaseState {
     submitEnabled: boolean
 }
 
-export class RegistrationView extends Component<BaseProps, BaseState> {
+interface RegistrationViewProps extends BaseProps {
+    handleRegistrationSuccess : any
+}
+
+export class RegistrationView extends Component<RegistrationViewProps, RegistrationViewState> {
     state: RegistrationViewState = {
         termsChecked: false,
         displayName: "",
@@ -59,7 +63,9 @@ export class RegistrationView extends Component<BaseProps, BaseState> {
             submitEnabled: false });
         const status:boolean = await saveUser(this.props.auth.getIdToken(), this.state.displayName, this.state.email);
         if (status) {
-            this.props.history.replace("/chats")
+            const user = await getUserDetails(this.props.auth.getIdToken());
+            this.props.auth.setUser(user)
+            this.props.handleRegistrationSuccess()
         } else {
             this.enableForm("Error while submitting form. Please try again.");
         }
@@ -80,7 +86,7 @@ export class RegistrationView extends Component<BaseProps, BaseState> {
             const user = await getUserDetails(this.props.auth.getIdToken());
             if (user) {
                 this.props.auth.setUser(user)
-                this.props.history.replace("/chats")
+                this.props.handleRegistrationSuccess()
             }
         } finally {
             this.enableForm(undefined)

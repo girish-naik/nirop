@@ -21,6 +21,20 @@ router.get("/", async function(req:Request, res:Response) {
     }
 });
 
+router.get("/:cId", async function(req:Request, res:Response) {
+    const uId:string = res.locals.jwtPayload.sub;
+    const {cId} = req.params;
+    try {
+        const results = await ChatService.getChat(uId, cId);
+        res.status(200).send(results);
+    } catch(err) {
+        console.log(err)
+        res.status(404).send({
+            message : "Error retrieving chat."
+        })
+    }
+});
+
 router.post("/start", validateParticipants, async function(req:Request, res:Response) {
     const uId:string = res.locals.jwtPayload.sub;
     const participants: string[] = req.body.participants;

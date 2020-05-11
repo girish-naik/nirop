@@ -24,12 +24,19 @@ export interface Auth0ConfigType {
     [key: string]: any
 }
 
+export interface FileStoreConfig {
+    awsRegion : string
+    attachmentsBucket : string
+    linkExpiryTimeout : number
+}
+
 export interface ConfigType {
     allowedFrontendUrl: string
     port: string
     dynamoDB: DynamoDBConfigType,
     auth0: Auth0ConfigType
-    views: ViewConfig
+    views: ViewConfig,
+    fileStore: FileStoreConfig
 }
 
 export interface DynamoDBConfigType {
@@ -48,19 +55,19 @@ export interface ViewConfig {
 }
 
 export interface JkwsKey {
-    use : string,
-    kty : string,
-    kid : string,
-    x5c : string[],
-    n : string,
-    e : string,
-    nbf :string
+    use: string,
+    kty: string,
+    kid: string,
+    x5c: string[],
+    n: string,
+    e: string,
+    nbf: string
 }
 
 export interface AppJkwsKey {
-    kid : string,
-    nbf :string,
-    publicKey : string
+    kid: string,
+    nbf: string,
+    publicKey: string
 }
 
 const dynamodb_host = process.env.DYNAMODBHOST || "localhost";
@@ -72,7 +79,7 @@ const config: ConfigType = {
         "contacts": {
             pageLength: 10
         },
-        "chats" : {
+        "chats": {
             pageLength: 10
         }
     },
@@ -90,7 +97,7 @@ const config: ConfigType = {
                             { AttributeName: "uId", KeyType: "HASH" }
                         ],
                         AttributeDefinitions: [
-                            { AttributeName: "uId", AttributeType: "S" }, 
+                            { AttributeName: "uId", AttributeType: "S" },
                             { AttributeName: "displayName", AttributeType: "S" }
                         ],
                         GlobalSecondaryIndexes: [
@@ -119,16 +126,16 @@ const config: ConfigType = {
                     }
                 }
             },
-            "conversation" : {
-                Tables : {
-                    "ConvoTable" : {
+            "conversation": {
+                Tables: {
+                    "ConvoTable": {
                         TableName: process.env.CONVERSATION_TABLE_NAME,
                         KeySchema: [
                             { AttributeName: "pId", KeyType: "HASH" },
                             { AttributeName: "cId", KeyType: "RANGE" }
                         ],
                         AttributeDefinitions: [
-                            { AttributeName: "cId", AttributeType: "S" }, 
+                            { AttributeName: "cId", AttributeType: "S" },
                             { AttributeName: "pId", AttributeType: "S" },
                             { AttributeName: "uDate", AttributeType: "S" },
                         ],
@@ -173,11 +180,56 @@ const config: ConfigType = {
                         BillingMode: "PAY_PER_REQUEST"
                     }
                 }
+            },
+            "message": {
+                Tables: {
+                    "MessageTable": {
+                        TableName: process.env.MESSAGE_TABLE_NAME,
+                        KeySchema: [
+                            { AttributeName: "mId", KeyType: "HASH" },
+                            { AttributeName: "sId", KeyType: "RANGE" }
+                        ],
+                        AttributeDefinitions: [
+                            { AttributeName: "mId", AttributeType: "S" },
+                            { AttributeName: "cId", AttributeType: "S" },
+                            { AttributeName: "sId", AttributeType: "S" },
+                            { AttributeName: "cDate", AttributeType: "S" }
+                        ],
+                        GlobalSecondaryIndexes: [
+                            {
+                                "IndexName": process.env.MESSAGE_TABLE_UDATE_IDX,
+                                "KeySchema": [
+                                    {
+                                        "AttributeName": "cId",
+                                        "KeyType": "HASH"
+                                    },
+                                    {
+                                        "AttributeName": "cDate",
+                                        "KeyType": "RANGE"
+                                    }
+                                ],
+                                "Projection": {
+                                    "ProjectionType": "ALL"
+                                },
+                                "ProvisionedThroughput": {
+                                    "ReadCapacityUnits": 1,
+                                    "WriteCapacityUnits": 1
+                                }
+                            }
+                        ],
+                        BillingMode: "PAY_PER_REQUEST"
+                    }
+                }
             }
         }
     },
     auth0: {
         "jwksUrl": process.env.JWKS_URL
+    },
+    fileStore : {
+        awsRegion : process.env.AWS_REGION,
+        attachmentsBucket : process.env.AWS_BUCKET,
+        linkExpiryTimeout : 300
     }
 }
 
@@ -185,7 +237,7 @@ export const appConfig: ConfigType = config;
 
 export async function fetchSigningKeys(): Promise<AppJkwsKey[]> {
     const response: AxiosResponse = await Axios.get(appConfig.auth0.jwksUrl);
-    var keys:JkwsKey[] = response.data.keys;
+    var keys: JkwsKey[] = response.data.keys;
     if (!keys || !keys.length) {
         throw new Error('The JWKS endpoint did not contain any keys');
     }
@@ -206,7 +258,7 @@ export async function verifyToken(signingKeys: AppJkwsKey[], authHeader: string)
         throw new Error('Invalid or Expired token.')
     }
     const kid = jwt.header.kid;
-    const signingKey:AppJkwsKey = signingKeys.find(key => key.kid === kid);
+    const signingKey: AppJkwsKey = signingKeys.find(key => key.kid === kid);
     const certificate: { publicKey: string } = signingKey;
     try {
         verify(token, certificate.publicKey, { algorithms: ["RS256"] });
@@ -248,13 +300,13 @@ export async function createTables(serviceName: string) {
     }
 }
 
-export async function batchWrite(params:BatchWriteItemInput) {
+export async function batchWrite(params: BatchWriteItemInput) {
     const dynamoDBConfig = appConfig.dynamoDB;
     const dynamoDB: DynamoDB = getDyanamoDBRef(dynamoDBConfig);
     await dynamoDB.batchWriteItem(params).promise();
 }
 
-function getDyanamoDBRef(dynamoDBConfig: DynamoDBConfigType) : DynamoDB {
+function getDyanamoDBRef(dynamoDBConfig: DynamoDBConfigType): DynamoDB {
     if (process.env.IS_OFFLINE) {
         return new DynamoDB(dynamoDBConfig.localConnectionParams);
     } else {
@@ -284,3 +336,63 @@ function getToken(authHeader: string): string {
     return token
 }
 
+export function getAttachmentsFileStore() {
+    return new AWS.S3({
+        signatureVersion: 'v4',
+        region: appConfig.fileStore.awsRegion,
+        params: {
+            Bucket: appConfig.fileStore.attachmentsBucket
+        }
+    });
+}
+
+const s3 = getAttachmentsFileStore();
+
+/* getGetSignedUrl generates an aws signed url to retreive an item
+ * @Params
+ *    key: string - the filename to be put into the s3 bucket
+ * @Returns:
+ *    a url as a string
+ */
+export function getGetSignedUrl( key: string ): string {
+      const url = s3.getSignedUrl('getObject', {
+          Bucket: appConfig.fileStore.attachmentsBucket,
+          Key: key,
+          Expires: appConfig.fileStore.linkExpiryTimeout
+        });
+  
+      return url;
+  }
+  
+  /* getPutSignedUrl generates an aws signed url to put an item
+   * @Params
+   *    key: string - the filename to be retreived from s3 bucket
+   * @Returns:
+   *    a url as a string
+   */
+  export function getPutSignedUrl( key: string ) {
+      const url = s3.getSignedUrl('putObject', {
+        Bucket: appConfig.fileStore.attachmentsBucket,
+        Key: key,
+        Expires: appConfig.fileStore.linkExpiryTimeout
+      });
+  
+      return url;
+  }
+
+  export async function deleteAttachment(todoId: string) {
+    try {
+        await s3.headObject({
+            Bucket : appConfig.fileStore.attachmentsBucket,
+            Key: todoId
+        }).promise();
+        await s3.deleteObject({
+            Bucket: appConfig.fileStore.attachmentsBucket,
+            Key: todoId
+        }).promise()
+    } catch (err) {
+        if (!err.code || err.code !== 'NotFound') {
+            throw err;
+        }
+    }
+}

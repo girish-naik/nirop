@@ -1,8 +1,11 @@
 import React, { Component, RefObject } from "react";
-import { Segment, Comment, Placeholder, Image } from "semantic-ui-react";
+import { Segment, Comment, Placeholder, Image, Modal } from "semantic-ui-react";
 import { Message } from "../models/Message";
 import { User } from "../models/User";
 import { getDisplayNameAvatar } from "../utils/UserUtil";
+import { BaseState } from "../models/BaseState";
+import { BaseProps } from "../models/BaseProps";
+import convertToDisplayDateTime from "../utils/DateTimeUtils";
 
 const viewConfig = {
     rows: 5
@@ -20,14 +23,17 @@ const scrollSectionOverride = {
     overflowY: "scroll"
 }
 
-export interface MessagesViewProps {
+export interface MessagesViewProps extends BaseProps {
     messages: Message[],
     senders: {
         [key: string]: User
-    }
+    },
+    handleDelete : any
 }
-export interface MessagesViewState {
-    messages?: Message[]
+
+export interface MessagesViewState extends BaseState {
+    file : string,
+    modalOpen : boolean
 }
 
 export class MessagesView extends Component<MessagesViewProps, MessagesViewState> {
@@ -35,19 +41,14 @@ export class MessagesView extends Component<MessagesViewProps, MessagesViewState
     constructor (props: MessagesViewProps) {
         super(props)
         this.messagesEndRef = React.createRef()
-    }
-
-    state: MessagesViewState = {
-    }
-
-    componentDidMount = () => {
-        this.setState({
-            messages: this.props.messages
-        })
+        this.state = {
+            file : "",
+            modalOpen : false
+        }
     }
 
     render() {
-        if (!this.state.messages) {
+        if (!this.props.messages) {
             return this.renderPlaceholders();
         } else {
             return this.renderMessages();
@@ -56,16 +57,33 @@ export class MessagesView extends Component<MessagesViewProps, MessagesViewState
 
     scrollToMyRef = () => {
         if (this.messagesEndRef && this.messagesEndRef.current) {
-            console.log("Updated" + this.messagesEndRef.current)
             this.messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }
 
+    handleModalClose = () => {
+        this.setState({file : "", modalOpen : false})
+    }
+
+    openModal = (url: any) => {
+        this.setState({file : url, modalOpen : true})   
+    }
+
+    handleDelete = (id: string) => {
+        this.props.handleDelete(id)
+    }
+
     renderMessages = () => {
-        if (this.state.messages && this.state.messages.length > 0) {
+        if (this.props.messages && this.props.messages.length > 0) {
             return (
                 <Segment style={scrollSectionOverride}>
-                    {this.state.messages.map((e, i) => {
+                    <Modal open={this.state.modalOpen} onClose={this.handleModalClose}>
+                        <Modal.Header>File View</Modal.Header>
+                        <Modal.Content>
+                            <Image src={this.state.file} size="large"/>
+                        </Modal.Content>
+                    </Modal>
+                    {this.props.messages.map((e, i) => {
                         return (
                             <Comment.Group key={e.id}>
                                 <Comment>
@@ -82,10 +100,11 @@ export class MessagesView extends Component<MessagesViewProps, MessagesViewState
                                     </Image>
                                     <Comment.Content>
                                         <Comment.Author>{this.props.senders[e.sId].displayName}</Comment.Author>
-                                        <Comment.Metadata>{e.createdDate}</Comment.Metadata>
+                                        {e.ext ? <Image src={e.url} size="small" onLoad={this.scrollToMyRef} onClick={() => {this.openModal(e.url)}}/> : ""}
                                         <Comment.Text>{e.message}</Comment.Text>
                                         <Comment.Actions>
-                                            <Comment.Action key={e.id}>Delete</Comment.Action>
+                                            <Comment.Action>{convertToDisplayDateTime(e.createdDate)}</Comment.Action>
+                                            {e.sId === this.props.auth.getUser().uId ? <Comment.Action key={e.id} onClick={() => this.handleDelete(e.id)}>Delete</Comment.Action> : ""}
                                         </Comment.Actions>
                                     </Comment.Content>
                                 </Comment>
@@ -95,6 +114,8 @@ export class MessagesView extends Component<MessagesViewProps, MessagesViewState
                     <div ref={this.messagesEndRef} />
                 </Segment>
             );
+        } else {
+            return (<Segment style={scrollSectionOverride}></Segment>)
         }
     }
 

@@ -12,3 +12,11 @@ services:
     build:
       context: ../../bill
     image: girishnaik/nirop-bill
+  nirop_mantle:
+      build:
+        context: ../../mantle
+      image: girishnaik/nirop-mantle
+  nirop_crown:
+    build:
+      context: ../../crown
+    image: girishnaik/nirop-crown
