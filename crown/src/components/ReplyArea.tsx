@@ -1,8 +1,7 @@
 import { BaseProps } from "../models/BaseProps";
 import { BaseState } from "../models/BaseState";
 import React, { Component, RefObject } from "react";
-import { Form, Input, Button, Icon, Segment, Popup, Modal, Image, HtmlInputrops } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import { Form, Input, Button, Modal, Image } from "semantic-ui-react";
 
 export interface ReplyAreaProps extends BaseProps {
     sendMessage : any

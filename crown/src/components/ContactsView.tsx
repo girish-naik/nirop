@@ -6,7 +6,6 @@ import { User } from "../models/User";
 import { getDisplayNameAvatar } from "../utils/UserUtil";
 import {getContactList} from '../api/bill/ContactsApi'
 import { ContactList } from "../api/bill/models/ContactList";
-import { Chat } from "../api/keel/models/Chat";
 import { startChat } from "../api/keel/ChatApi";
 
 const gridConfig = {
