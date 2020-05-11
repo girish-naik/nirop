@@ -20,7 +20,7 @@ before_install:
 install:
   - hatch/bin/createNPMRC.sh .npmrc
   - hatch/bin/build.sh
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
   - docker images
   - docker push "$DOCKER_USERNAME"/udacity-restapi-feed:latest
   - docker push "$DOCKER_USERNAME"/udacity-restapi-user:latest
