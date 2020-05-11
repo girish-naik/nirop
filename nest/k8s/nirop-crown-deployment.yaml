@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: nirop-crown
+  name: nirop-crown
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: nirop-crown
+  template:
+    metadata:
+      labels:
+        service: nirop-crown
+    spec:
+      containers:
+      - image: girishnaik/nirop-crown
+        name: nirop-crown
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m" 
+      restartPolicy: Always

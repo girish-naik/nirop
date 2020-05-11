@@ -34,7 +34,8 @@ export async function getConversation(cId: string, pId: string) : Promise<Conver
             ExpressionAttributeValues : {
                 ":cId" : cId
             },
-            TableName: convoTableName
+            TableName: convoTableName,
+            IndexName: cidIndex
         }).promise();
         const participants : string[] = [];
         result.Items.forEach(element => {

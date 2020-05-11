@@ -1,51 +1,68 @@
 version: "3"
 services:
-  nirop_sing:
+  nirop-sing:
     image: girishnaik/nirop-sing
     ports:
         - 8080:8080
     restart: always
     depends_on:
-      - nirop_keel
-      - nirop_bill
+      - nirop-keel
+      - nirop-bill
+      - nirop-mantle
   dynamodb_local:
     image: amazon/dynamodb-local:latest
     ports:
       - "8000:8000"
     command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
-  nirop_keel:
+  nirop-keel:
     image: girishnaik/nirop-keel
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
-      URL: "http://localhost:8100"
-      USER_TABLE_NAME: $USER_TABLE_NAME
-      USER_TABLE_INDEX: $USER_TABLE_INDEX
+      FRONTEND_URL: "http://localhost:3000"
       CONVERSATION_TABLE_UDATE_IDX: $CONVERSATION_TABLE_UDATE_IDX
       CONVERSATION_TABLE_NAME: $CONVERSATION_TABLE_NAME
       CONVERSATION_TABLE_CID_IDX: $CONVERSATION_TABLE_CID_IDX
-      PORT: $PORT
       JWKS_URL: $JWKS_URL
       IS_OFFLINE: $IS_OFFLINE
       DYNAMODBHOST: "dynamodb_local"
       PORT: 8080
     depends_on:
       - dynamodb_local
-  nirop_bill:
+  nirop-bill:
     image: girishnaik/nirop-bill
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
-      URL: "http://localhost:8100"
+      FRONTEND_URL: "http://localhost:3000"
       USER_TABLE_NAME: $USER_TABLE_NAME
       USER_TABLE_INDEX: $USER_TABLE_INDEX
-      CONVERSATION_TABLE_UDATE_IDX: $CONVERSATION_TABLE_UDATE_IDX
-      CONVERSATION_TABLE_NAME: $CONVERSATION_TABLE_NAME
-      CONVERSATION_TABLE_CID_IDX: $CONVERSATION_TABLE_CID_IDX
-      PORT: $PORT
       JWKS_URL: $JWKS_URL
       IS_OFFLINE: $IS_OFFLINE
       DYNAMODBHOST: "dynamodb_local"
       PORT: 8080
     depends_on:
         - dynamodb_local
+  nirop-mantle:
+    image: girishnaik/nirop-mantle
+    volumes:
+      - $HOME/.aws:/root/.aws
+    environment:
+      FRONTEND_URL: "http://localhost:3000"
+      MESSAGE_TABLE_NAME: $MESSAGE_TABLE_NAME
+      MESSAGE_TABLE_UDATE_IDX: $MESSAGE_TABLE_UDATE_IDX
+      AWS_BUCKET: $AWS_BUCKET
+      AWS_REGION: $AWS_REGION
+      AWS_PROFILE: $AWS_PROFILE
+      JWKS_URL: $JWKS_URL
+      IS_OFFLINE: $IS_OFFLINE
+      DYNAMODBHOST: "dynamodb_local"
+      PORT: 8080
+    depends_on:
+        - dynamodb_local
+  nirop-crown:
+    image: girishnaik/nirop-crown
+    ports:
+      - 3000:80
+    depends_on:
+        - nirop-sing

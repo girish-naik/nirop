@@ -1,24 +1,40 @@
-import express from 'express';
-
+import express, { NextFunction, Request, Response } from 'express';
 import { IndexRouter } from './controllers/v0/index.router';
-
 import bodyParser from 'body-parser';
-import { config } from './config/config';
-import { V0MODELS } from './controllers/v0/model.index';
-
-const c = config.dev;
+import {fetchSigningKeys, appConfig, JwtPayload, verifyToken} from '@bit/mr-obiwankenobi.nirop-chat-helpers.tummy'
+import { syncSchemas } from './dataLayer/sync';
 
 (async () => {
+  const config = appConfig;
+  var signingKeys = await fetchSigningKeys();
+  await syncSchemas();
   const app = express();
-  const port = process.env.PORT || 80; // default port to listen
+  const port = process.env.PORT || 8082; // default port to listen
   
   app.use(bodyParser.json());
 
   //CORS Should be restricted
   app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", c.url);
+    res.header("Access-Control-Allow-Origin", config.allowedFrontendUrl);
+    res.header("Access-Control-Allow-Methods", "GET, POST, DELETE");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
+  });
+
+  app.options('*', (req, res) => res.send());
+
+  app.use(async function(req:Request, res:Response, next:NextFunction) {
+    const authorizationHeader = req.header("authorization")
+    try {
+      const jwtPayload:JwtPayload = await verifyToken(signingKeys, authorizationHeader);
+      res.locals.jwtPayload = jwtPayload
+      next()
+    } catch (err) {
+      console.log(err)
+      res.status(401).send({
+        message : "Authentication failed."
+      })
+    }
   });
 
   app.use('/api/v0/', IndexRouter)
@@ -31,7 +47,7 @@ const c = config.dev;
 
   // Start the Server
   app.listen( port, () => {
-      console.log( `server running ` + c.url );
+      console.log( `server running ` + config.allowedFrontendUrl );
       console.log( `press CTRL+C to stop server` );
   } );
 })();

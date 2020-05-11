@@ -7,15 +7,15 @@
     "tsc": "tsc",
     "local": "ts-node-dev --inspect --respawn --transpileOnly ./src/server.ts",
     "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
-    "prod": "tsc && node ./www/server.js",
-    "clean": "rm -rf www/ || true",
-    "build": "npm run clean && tsc && cp -rf src/config www/config && cp .npmrc www/.npmrc && cp package.json www/package.json && cd www && zip -r Archive.zip . && cd ..",
+    "prod": "node ./server.js",
+    "clean": "rm -rf app/ || true",
+    "build": "npm run clean && tsc && cp package.json app/package.json && cp -rf node_modules/ app/node_modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "mr-obiwankenobi",
   "dependencies": {
     "aws-sdk": "^2.433.0",
-    "@bit/mr-obiwankenobi.nirop-chat-helpers.tummy": "^0.0.16",
+    "@bit/mr-obiwankenobi.nirop-chat-helpers.tummy": "^0.0.23",
     "body-parser": "^1.18.3",
     "express": "^4.17.1",
     "uuid" : "^8.0.0"
@@ -23,8 +23,8 @@
   "devDependencies": {
     "@types/express": "^4.16.1",
     "@types/node": "^10.14.4",
-    "aws-sdk": "^2.433.0",
-    "ts-loader": "^5.3.3",
+    "@types/uuid": "^7.0.3",
+    "ts-node-dev": "^1.0.0-pre.44",
     "eslint": "^6.8.0",
     "typescript": "^3.4.1"
   }

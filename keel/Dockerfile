@@ -4,4 +4,4 @@ WORKDIR /usr/app
 
 COPY ./app .
 EXPOSE 8080
-CMD [ "npm", "run", "prod" ]
+CMD [ "yarn", "prod" ]

@@ -10,7 +10,7 @@ import { syncSchemas } from './dataLayer/sync';
   var signingKeys = await fetchSigningKeys();
   await syncSchemas();
   const app = express();
-  const port = config.port || 80; // default port to listen
+  const port = config.port || 8080; // default port to listen
   
   app.use(bodyParser.json());
 
@@ -20,6 +20,8 @@ import { syncSchemas } from './dataLayer/sync';
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
   });
+
+  app.options('*', (req, res) => res.send());
 
   app.use(async function(req:Request, res:Response, next:NextFunction) {
     const authorizationHeader = req.header("authorization")
