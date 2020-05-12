@@ -20,11 +20,29 @@ router.post("/", validateAndParseSendRequest, async function(req:Request, res:Re
     }
 });
 
+router.get("/message/:mId", async function(req:Request, res:Response, next: NextFunction) {
+    const uId:string = res.locals.jwtPayload.sub;
+    const { mId } = req.params;
+    if (!mId) {
+        res.status(422).send({msg : "Invalid request."})
+    }
+    try {
+        const message:Message = await MessageService.fetchMessage(uId, mId);
+        res.status(200).send(message);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            msg : "Failed to fetch messages."
+        });
+    }
+
+});
+
 router.get("/:cId", async function(req:Request, res:Response, next: NextFunction){
     const uId:string = res.locals.jwtPayload.sub;
     const { cId } = req.params;
     if (!cId) {
-        res.status(422).send({message : "Invalid request."});
+        res.status(422).send({msg : "Invalid request."});
     }
     try {
         const messageView:MessageView = await MessageService.fetchMessages(uId, cId, 100);

@@ -7,11 +7,10 @@ import { Segment } from "semantic-ui-react";
 import { User } from "../models/User";
 import { Message } from "../models/Message";
 import { Message as MessageVO} from "../api/mantle/models/Message";
-import { fetchMessages, sendMessage, deleteMessage } from "../api/mantle/MessageApi";
+import { fetchMessages, sendMessage, deleteMessage, saveFile, fetchMessage } from "../api/mantle/MessageApi";
 import { getChat } from "../api/keel/ChatApi";
 import { getContactList } from "../api/bill/ContactsApi";
 import { SendMessageResponse } from "../api/mantle/models/SendMessageResponse";
-import Axios from "axios";
 
 export interface ChatProps extends BaseProps {
     match: {
@@ -47,15 +46,18 @@ export class ChatView extends Component<ChatProps, ChatState> {
         const cId = this.state.cId;
         const msg:SendMessageResponse|undefined = await sendMessage(this.props.auth.getIdToken(), {cId, message, ext});
         if (msg) {
+            let msgUrl = msg.url;
             if (msg.url && this.fileRef && this.fileRef.current && this.fileRef.current.files) {
-                await Axios.put(msg.url, this.fileRef.current.files[0])
+                await saveFile(msg.url, this.fileRef.current.files[0])
+                const savedMsg:Message|undefined = await fetchMessage(this.props.auth.getIdToken(), msg.mId);
+                msgUrl = savedMsg ? savedMsg.url : msgUrl;
             }
             let messages:Message[] = this.state.messages;
             messages.push({
                 ...msg,
                 id : msg.mId,
                 createdDate : msg.cDate,
-                url : msg.url,
+                url : msgUrl,
                 ext : msg.ext
             });
             this.setState({...this.state, messages : messages})

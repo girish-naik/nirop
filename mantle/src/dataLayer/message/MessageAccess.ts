@@ -30,6 +30,22 @@ export async function deleteMessage(sId: string, mId: string) : Promise<string> 
     return Promise.resolve(ext);
 }
 
+export async function fetchMessage(sId: string, mId: string) : Promise<Message> {
+    const results = await dClient.query({
+        KeyConditionExpression : "sId = :sId and mId = :mId",
+        ExpressionAttributeValues : {
+            ":sId" : sId,
+            ":mId" : mId
+        },
+        TableName: messageTableName,
+    }).promise();
+    if (results.Count === 1) {
+        return Promise.resolve(createMessage(results.Items[0]));
+    } else {
+        throw new Error("Failed to fetch message.");
+    }
+}
+
 export async function fetchMessages(cId: string, limit: number) : Promise<MessageView> {
     const result = await dClient.query({
         KeyConditionExpression : "cId = :cId",

@@ -2,7 +2,11 @@ language: node_js
 node_js:
   - 12
 
-services: docker
+  branches:
+  only:
+  - master
+
+  services: docker
 
 env:
   - DOCKER_COMPOSE_VERSION=1.23.2
@@ -20,16 +24,16 @@ before_install:
 install:
   - hatch/bin/createNPMRC.sh .npmrc
   - hatch/bin/build.sh
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
   - docker images
-  - docker push "$DOCKER_USERNAME"/udacity-restapi-feed:latest
-  - docker push "$DOCKER_USERNAME"/udacity-restapi-user:latest
-  - docker push "$DOCKER_USERNAME"/udacity-frontend:local
-  - docker push "$DOCKER_USERNAME"/reverseproxy:latest
-
-# script:
-#   - mkdir ${HOME}/.kube
-#   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
-#   - kubectl get pods
-#   - cd udacity-c3-deployment/k8s
-#   - /bin/sh kube_deploy.sh
+  - docker push $DOCKER_USERNAME/nirop-sing:latest
+  - docker push $DOCKER_USERNAME/nirop-crown:latest
+  - docker push $DOCKER_USERNAME/nirop-keel:latest
+  - docker push $DOCKER_USERNAME/nirop-bill:latest
+  - docker push $DOCKER_USERNAME/nirop-mantle:latest
+ script:
+   - mkdir ${HOME}/.kube
+   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
+   - kubectl get pods
+   - cd udacity-c3-deployment/k8s
+   - /bin/sh kube_deploy.sh

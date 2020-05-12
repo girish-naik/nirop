@@ -33,6 +33,11 @@ export async function deleteMessage(uId: string, mId: string) {
     return Promise.resolve();
 }
 
+export async function fetchMessage(uId: string, mId: string) : Promise<Message> {
+    const messageDO: MessageDO = await dataLayer.fetchMessage(uId, mId);
+    return convertToMessageWithUrl(messageDO);
+}
+
 function convertToMessageDO(mId: string, sId: string, cDate: string, message: SendMessageRequest): MessageDO {
     return {
         mId,

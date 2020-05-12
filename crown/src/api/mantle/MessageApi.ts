@@ -3,6 +3,7 @@ import { apiConfig } from "../../config/config";
 import { MessageView } from "./models/MessageView";
 import { SendMessageRequest } from "./models/SendMessageRequest";
 import { SendMessageResponse } from "./models/SendMessageResponse";
+import { Message } from "../../models/Message";
 
 const apiEndpoint = apiConfig.message.apiEndpoint;
 
@@ -40,6 +41,25 @@ export async function sendMessage(idToken: string, message: SendMessageRequest):
     try {
     const response = await Axios.post(`${apiEndpoint}/`,
         message,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${idToken}`
+            }
+        })
+        return response.data;
+    } catch (err) {
+        return undefined;
+    }
+}
+
+export async function saveFile(url: string, file: any) {
+    await Axios.put(url, file);
+}
+
+export async function fetchMessage(idToken:string, mId:string) : Promise<Message|undefined> {
+    try {
+        const response = await Axios.get(`${apiEndpoint}/message/` + mId,
         {
             headers: {
                 'Content-Type': 'application/json',
