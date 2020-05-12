@@ -36,5 +36,4 @@ script:
   - mkdir ${HOME}/.kube
   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
   - kubectl get pods
-  - cd udacity-c3-deployment/k8s
-  - /bin/sh kube_deploy.sh
+  - /bin/sh nest/k8s/kube_deploy.sh
