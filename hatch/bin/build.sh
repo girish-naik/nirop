@@ -1,3 +1,4 @@
+#!/bin/sh
 for dir_name in $NIROPSRC/*/
 do
     if [ -f $dir_name"/Dockerfile" ]; then
