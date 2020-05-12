@@ -41,7 +41,7 @@ The codebase is a mono-repo divided by functionality into the below products.
 There are multiple configurations in which the project can be setup. The following steps will guide through common mandatory setup independent of specific configuration.
 
 #### Environment variables
-
+```
 AWS_BUCKET=<s3 bucket name for storing attachments>
 AWS_CREDENTIALS=<base64 encoded aws iam credentials file 
 AWS_PROFILE=<aws profile to use>
@@ -56,16 +56,17 @@ MESSAGE_TABLE_UDATE_IDX=<mesage table index1 name>
 NIROPSRC=<location of project src>
 USER_TABLE_INDEX=<user table index1 name>  
 USER_TABLE_NAME=<user table name>
+```
 
 #### Development environment setup
 The following development software need to be setup - 
 
-NodeJS (^12) - https://nodejs.org/en/download/
-Yarn (^1.22.x) - https://classic.yarnpkg.com/en/docs/install/#mac-stable
-AWS CLI (^2) - https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html. An AWS account is needed and an IAM user must be configured locally.
-Docker (^2.2.x.x) - https://docs.docker.com/get-docker/. An account needs to be created on dockerhub.com
-Bit - https://docs.bit.dev/docs/installation. An account needs to be created on bit.dev
-Auth0 - An account needs to be created and an application needs to be configured for use. 
+* NodeJS (^12) - https://nodejs.org/en/download/
+* Yarn (^1.22.x) - https://classic.yarnpkg.com/en/docs/install/#mac-stable
+* AWS CLI (^2) - https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html. An AWS account is needed and an IAM user must be configured locally.
+* Docker (^2.2.x.x) - https://docs.docker.com/get-docker/. An account needs to be created on dockerhub.com
+* Bit - https://docs.bit.dev/docs/installation. An account needs to be created on bit.dev
+* Auth0 - An account needs to be created and an application needs to be configured for use. 
 
 ### Local development of independent services
 This is the simplest configuration to run each service in dev mode.
@@ -206,7 +207,7 @@ nest/k8s/kube_undeploy.sh
 #### Building and Deploying through Travis CI
 
 Set up the following environment variables in TRAVIS CI.
-
+```
 AWS_BUCKET=<s3 bucket name for storing attachments>
 AWS_CREDENTIALS=<base64 encoded aws iam credentials file 
 AWS_PROFILE=<aws profile to use>
@@ -225,7 +226,7 @@ MESSAGE_TABLE_UDATE_IDX=<mesage table index1 name>
 NIROPSRC=.
 USER_TABLE_INDEX=<user table index1 name>  
 USER_TABLE_NAME=<user table name>
-  
+```
 ### Docker images
 
 https://hub.docker.com/repository/docker/girishnaik/nirop-bill
