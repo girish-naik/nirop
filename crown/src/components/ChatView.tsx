@@ -11,7 +11,6 @@ import { fetchMessages, sendMessage, deleteMessage, saveFile, fetchMessage } fro
 import { getChat } from "../api/keel/ChatApi";
 import { getContactList } from "../api/bill/ContactsApi";
 import { SendMessageResponse } from "../api/mantle/models/SendMessageResponse";
-import Axios from "axios";
 
 export interface ChatProps extends BaseProps {
     match: {
