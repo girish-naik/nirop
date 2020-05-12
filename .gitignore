@@ -8,4 +8,7 @@ www
 app
 .DS_Store
 .terraform
-terraform.tfstate
+terraform.tfstate*
+nirop-cluster.tar.gz
+terraform.tfvars
+nirop-cluster-kubeconfig
